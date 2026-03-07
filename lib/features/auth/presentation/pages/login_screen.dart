@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:koder_animalts_app/features/auth/presentation/widgets/auth_brand_logo.dart';
+import 'package:koder_animalts_app/features/auth/presentation/widgets/google_login_button.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -14,6 +15,7 @@ class LoginScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              const AuthBrandLogo(),
               const Spacer(),
               const Text(
                 'Welcome to Koder Animalts',
@@ -25,32 +27,10 @@ class LoginScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               const Spacer(),
-              SizedBox(
-                width: double.infinity,
-                child: ShadButton(
-                  backgroundColor: Colors.deepOrange[300],
-                  foregroundColor: Colors.white,
-                  decoration: const ShadDecoration(
-                    border: ShadBorder(
-                      radius: BorderRadius.all(Radius.circular(32)),
-                    ),
-                  ),
-                  width: double.infinity,
-                  onPressed: () {},
-                  text: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        'lib/assets/google.png',
-                        width: 20,
-                        height: 20,
-                        fit: BoxFit.contain,
-                      ),
-                      const SizedBox(width: 12),
-                      const Text('Login with Google'),
-                    ],
-                  ),
-                ),
+              GoogleLoginButton(
+                onPressed: () {
+                  // TODO: Implement Google Login
+                },
               ),
             ],
           ),
