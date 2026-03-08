@@ -1,15 +1,13 @@
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class GoogleUserService {
-  final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
-  Future<GoogleSignInAccount?> signInSilently() async {
+  bool isUserLogged() {
     try {
-      return await _googleSignIn.attemptLightweightAuthentication();
-    } catch (e, s) {
-      print(e);
-      print(s);
-      return null;
+      return _firebaseAuth.currentUser != null;
+    } catch (e) {
+      return false;
     }
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:koder_animalts_app/features/assign_role/domain/entities/user_role.dart';
 import 'package:koder_animalts_app/features/assign_role/presentation/providers/role_provider.dart';
@@ -73,7 +74,7 @@ class AssignRolePage extends ConsumerWidget {
                 alignment: Alignment.bottomRight,
                 child: ShadButton(
                   onPressed: () {
-                    context.go('/home');
+                    context.go("/home");
                   },
                   text: const Text('Siguiente'),
                 ),
