@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:koder_animalts_app/shared/widgets/spinner_main.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -53,11 +54,7 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
             ),
             const SizedBox(height: 30),
-            const CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(
-                Colors.deepOrangeAccent,
-              ),
-            ),
+            const SpinnerMain(),
           ],
         ),
       ),

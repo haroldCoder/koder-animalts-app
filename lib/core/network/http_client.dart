@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:koder_animalts_app/core/errors/failures.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
@@ -8,6 +9,7 @@ class HttpClient {
 
   HttpClient({Dio? dio}) : _dio = dio ?? Dio() {
     _dio.options
+      ..baseUrl = dotenv.env['API_URL'] ?? 'http://localhost:3000'
       ..connectTimeout = const Duration(seconds: 15)
       ..receiveTimeout = const Duration(seconds: 15)
       ..responseType = ResponseType.json;

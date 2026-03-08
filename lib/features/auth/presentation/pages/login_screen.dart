@@ -1,12 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:koder_animalts_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:koder_animalts_app/features/auth/presentation/widgets/auth_brand_logo.dart';
 import 'package:koder_animalts_app/features/auth/presentation/widgets/google_login_button.dart';
+import 'package:koder_animalts_app/shared/widgets/spinner_main.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends ConsumerWidget {
   const LoginScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authState = ref.watch(authProvider);
+
+    ref.listen(authProvider, (previous, next) {
+      next.when(
+        data: (data) {
+          if (data != null) {}
+        },
+        error: (error, stack) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('Error: $error')));
+        },
+        loading: () {},
+      );
+    });
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -27,11 +46,14 @@ class LoginScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               const Spacer(),
-              GoogleLoginButton(
-                onPressed: () {
-                  // TODO: Implement Google Login
-                },
-              ),
+              if (authState.isLoading)
+                const SpinnerMain()
+              else
+                GoogleLoginButton(
+                  onPressed: () {
+                    ref.read(authProvider.notifier).loginWithGoogle();
+                  },
+                ),
             ],
           ),
         ),
