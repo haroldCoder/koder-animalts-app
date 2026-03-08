@@ -4,6 +4,8 @@ import 'package:koder_animalts_app/features/auth/data/models/authenticate_params
 import 'package:koder_animalts_app/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:koder_animalts_app/features/auth/domain/repositories/auth_repository.dart';
 import 'package:koder_animalts_app/features/auth/infrastructure/services/google_sign_in_service.dart';
+import 'package:koder_animalts_app/features/auth/infrastructure/services/google_initialize_service.dart';
+import 'package:koder_animalts_app/features/auth/infrastructure/services/google_user_service.dart';
 
 part 'auth_provider.g.dart';
 
@@ -14,6 +16,13 @@ HttpClient httpClient(Ref ref) => HttpClient();
 GoogleSignInService googleSignInService(Ref ref) => GoogleSignInService();
 
 @riverpod
+GoogleInitializeService googleInitializeService(Ref ref) =>
+    GoogleInitializeService();
+
+@riverpod
+GoogleUserService googleUserService(Ref ref) => GoogleUserService();
+
+@riverpod
 AuthRepository authRepository(Ref ref) {
   final client = ref.watch(httpClientProvider);
   return AuthRepositoryImpl(client);
@@ -22,10 +31,29 @@ AuthRepository authRepository(Ref ref) {
 @riverpod
 class AuthNotifier extends _$AuthNotifier {
   @override
-  AsyncValue<Map<String, dynamic>?> build() {
-    // Intentar recuperar sesión al iniciar (si el service lo permite)
-    // _checkPersistedSession();
-    return const AsyncValue.data(null);
+  FutureOr<Map<String, dynamic>?> build() async {
+    // 1. Inicializar apenas se abra
+    final initService = ref.read(googleInitializeServiceProvider);
+    await initService.initialize();
+
+    // 2. Consultarlo apenas se abra
+    _checkPersistedSession();
+
+    return null;
+  }
+
+  Future<void> _checkPersistedSession() async {
+    final userService = ref.read(googleUserServiceProvider);
+    final user = await userService.signInSilently();
+
+    if (user != null) {
+      state = AsyncValue.data({
+        'email': user.email,
+        'displayName': user.displayName,
+        'photoUrl': user.photoUrl,
+        'id': user.id,
+      });
+    }
   }
 
   Future<void> loginWithGoogle() async {
@@ -39,7 +67,7 @@ class AuthNotifier extends _$AuthNotifier {
       return;
     }
 
-    final authentication = await user.authentication;
+    final authentication = user.authentication;
 
     final params = AuthenticateParamsDto(
       email: user.email,
