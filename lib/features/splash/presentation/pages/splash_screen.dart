@@ -15,10 +15,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _navigateToLogin();
+    _checkAuthAndNavigate();
   }
 
-  void _navigateToLogin() async {
+  void _checkAuthAndNavigate() async {
     await Future.delayed(const Duration(seconds: 2));
 
     final authState = ref.read(authProvider.notifier);

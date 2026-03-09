@@ -1,4 +1,4 @@
-enum UserRole { uusuario, veterinario }
+enum UserRole { OWNER, VETERINARIAN }
 
 class UserRoleEntity {
   final UserRole role;
@@ -7,9 +7,9 @@ class UserRoleEntity {
 
   String get displayName {
     switch (role) {
-      case UserRole.uusuario:
+      case UserRole.OWNER:
         return 'Usuario';
-      case UserRole.veterinario:
+      case UserRole.VETERINARIAN:
         return 'Veterinario';
     }
   }

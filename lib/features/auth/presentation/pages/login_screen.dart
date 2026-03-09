@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:koder_animalts_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:koder_animalts_app/features/auth/presentation/widgets/auth_brand_logo.dart';
 import 'package:koder_animalts_app/features/auth/presentation/widgets/google_login_button.dart';
+import 'package:koder_animalts_app/features/user/domain/entities/user.dart';
+import 'package:koder_animalts_app/features/user/presentation/providers/user_provider.dart';
 import 'package:koder_animalts_app/shared/widgets/spinner_main.dart';
 
 class LoginScreen extends ConsumerWidget {
@@ -16,14 +18,34 @@ class LoginScreen extends ConsumerWidget {
     ref.listen(authProvider, (previous, next) {
       next.when(
         data: (data) {
-          if (data != null) {
-            context.go('/assign-role');
+          if (data != null && data['data'] != null) {
+            ref.read(userProvider.notifier).getUser(data['data'] as String);
           }
         },
         error: (error, stack) {
           ScaffoldMessenger.of(
             context,
-          ).showSnackBar(SnackBar(content: Text('Error: $error')));
+          ).showSnackBar(SnackBar(content: Text('Auth Error: $error')));
+        },
+        loading: () {},
+      );
+    });
+
+    ref.listen(userProvider, (previous, next) {
+      next.when(
+        data: (user) {
+          if (user != null) {
+            if (user.role != RoleEnum.UNKNOWN) {
+              context.go("/home");
+            } else {
+              context.go('/assign-role');
+            }
+          }
+        },
+        error: (error, stack) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('User Error: $error')));
         },
         loading: () {},
       );
