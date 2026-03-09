@@ -32,39 +32,51 @@ class _AssignRolePage extends ConsumerState<AssignRolePage> {
     final isOwnerLoading = ref.watch(ownerProvider).isLoading;
     final isVeterinarianLoading = ref.watch(veterinarianProvider).isLoading;
 
-    void assignRole() async {
+    Future<void> assignRole() async {
       if (roleState.role == UserRole.OWNER) {
         if (roleState.contact.isEmpty || roleState.address.isEmpty) {
           ShadToaster.of(context).show(const ToastFieldsOwner());
+          return;
         } else {
-          ref
-              .read(ownerProvider.notifier)
-              .createOwner(
-                CreateOwnerDto(
-                  phone: roleState.contact,
-                  address: roleState.address,
-                  userId: ref.watch(authProvider).value?['data'] as String,
-                ),
-              );
+          try {
+            await ref
+                .read(ownerProvider.notifier)
+                .createOwner(
+                  CreateOwnerDto(
+                    phone: roleState.contact,
+                    address: roleState.address,
+                    userId: ref.read(authProvider).value?['data'] as String,
+                  ),
+                );
+          } catch (e) {
+            return;
+          }
         }
       } else if (roleState.role == UserRole.VETERINARIAN) {
         if (roleState.contact.isEmpty || roleState.clinicId.isEmpty) {
           ShadToaster.of(
             context,
           ).show(const ToastFieldsVeterinarian() as ShadToast);
+          return;
         } else {
-          ref
-              .read(veterinarianProvider.notifier)
-              .createVeterinarian(
-                CreateVeterinarianDto(
-                  phone: roleState.contact,
-                  specialty: roleState.specialty,
-                  userId: ref.watch(authProvider).value!['data'] as String,
-                  clinicId: roleState.clinicId,
-                ),
-              );
+          try {
+            await ref
+                .read(veterinarianProvider.notifier)
+                .createVeterinarian(
+                  CreateVeterinarianDto(
+                    phone: roleState.contact,
+                    specialty: roleState.specialty,
+                    userId: ref.read(authProvider).value!['data'] as String,
+                    clinicId: roleState.clinicId,
+                  ),
+                );
+          } catch (e) {
+            return;
+          }
         }
       }
+      if (!mounted) return;
+      context.go('/home');
     }
 
     return Scaffold(

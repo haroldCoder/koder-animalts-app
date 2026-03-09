@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:koder_animalts_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 class HomePage extends ConsumerWidget {
@@ -12,14 +11,7 @@ class HomePage extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: theme.colorScheme.background,
-      body: Center(
-        child: ShadButton(
-          text: const Text("Close session"),
-          onPressed: () {
-            ref.read(authProvider.notifier).logOut();
-          },
-        ),
-      ),
+      body: Center(child: Text("Home")),
     );
   }
 }
