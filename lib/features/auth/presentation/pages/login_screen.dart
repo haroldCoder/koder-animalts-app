@@ -14,6 +14,7 @@ class LoginScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authProvider);
+    final isUserLoading = ref.watch(userProvider).isLoading;
 
     ref.listen(authProvider, (previous, next) {
       next.when(
@@ -53,35 +54,43 @@ class LoginScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const AuthBrandLogo(),
-              const Spacer(),
-              const Text(
-                'Welcome to Koder Animalts',
-                style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.deepOrangeAccent,
-                ),
-                textAlign: TextAlign.center,
+      body: Stack(
+        children: [
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24.0,
+                vertical: 32.0,
               ),
-              const Spacer(),
-              if (authState.isLoading)
-                const SpinnerMain()
-              else
-                GoogleLoginButton(
-                  onPressed: () {
-                    ref.read(authProvider.notifier).loginWithGoogle();
-                  },
-                ),
-            ],
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const AuthBrandLogo(),
+                  const Spacer(),
+                  const Text(
+                    'Welcome to Koder Animalts',
+                    style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.deepOrangeAccent,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const Spacer(),
+                  if (authState.isLoading)
+                    const SpinnerMain()
+                  else
+                    GoogleLoginButton(
+                      onPressed: () {
+                        ref.read(authProvider.notifier).loginWithGoogle();
+                      },
+                    ),
+                ],
+              ),
+            ),
           ),
-        ),
+          if (isUserLoading) const SpinnerMain(),
+        ],
       ),
     );
   }
