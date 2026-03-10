@@ -1,12 +1,14 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:koder_animalts_app/core/providers/http_client_provider.dart';
+import 'package:koder_animalts_app/core/providers/storage_provider.dart';
 import 'package:koder_animalts_app/features/auth/infrastructure/services/google_user_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:koder_animalts_app/features/auth/data/models/authenticate_params_dto.dart';
 import 'package:koder_animalts_app/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:koder_animalts_app/features/auth/domain/repositories/auth_repository.dart';
 import 'package:koder_animalts_app/features/auth/infrastructure/services/google_sign_in_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'auth_provider.g.dart';
 
@@ -98,6 +100,7 @@ class AuthNotifier extends _$AuthNotifier {
     result.fold(
       (failure) => state = AsyncValue.error(failure, StackTrace.current),
       (data) {
+        ref.read(sharedPreferencesProvider).setString('idUser', data['data']);
         state = AsyncValue.data({...data});
       },
     );
